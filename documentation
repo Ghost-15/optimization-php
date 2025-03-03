@@ -1,0 +1,58 @@
+# Performance Analysis Document
+
+## 1. Introduction
+L'objectif de ce document est d'analyser les performances de
+l'application Symfony, en particulier la page `/carousel`,
+et d'identifier les problèmes affectant sa rapidité et son efficacité.
+Nous explorerons les causes des ralentissements, les métriques permettant de confirmer
+ces problèmes, ainsi que les solutions possibles pour améliorer la performance.
+
+## 2. Pourquoi la performance est importante ?
+Une application performante garantit une meilleure expérience utilisateur,
+réduit les coûts d'hébergement et améliore le référencement SEO.
+Sur un serveur avec 2 CPU et 2 Go de RAM, chaque ressource compte,
+et l'optimisation est cruciale pour éviter des latences inutiles.
+
+## 3. Hypothèse
+Nous supposons que la page `/carousel` souffre de lenteurs à cause de
+requêtes inefficaces à la base de données PostgreSQL,
+d'une mauvaise gestion des assets (images).
+
+## 4. Problèmes identifiés
+- Trop de requêtes SQL, manque d’indexation.
+- Chargement non optimisé des images.
+- Absence de mise en cache des requêtes et des assets.
+
+## 5. Tests et Mesures
+Pour identifier ces problèmes, nous allons mesurer plusieurs indicateurs de performance :
+- Temps de réponse du serveur
+- Nombre de requêtes SQL exécutées
+- Taille et temps de chargement des images
+- Score Lighthouse pour le frontend
+
+### Outils de mesure
+- Symfony Profiler : Analyse des requêtes SQL et du rendu des templates.
+- EXPLAIN ANALYZE dans PostgreSQL : Détection des requêtes lentes.
+- Lighthouse (Chrome DevTools) : Évaluation du rendu et des performances front-end.
+- GTmetrix / PageSpeed Insights : Analyse du chargement des assets.
+
+## 6. Solutions immédiates
+- Optimisation SQL : Ajouter des index, éviter les requêtes N+1, utiliser la mise en cache Doctrine.
+- Compression et lazy loading des images : Utilisation de WebP, chargement différé des images hors écran.
+- Mise en cache : Utilisation d’APCu, Redis ou Varnish pour stocker les requêtes et éviter des recalculs inutiles.
+- Optimisation Tailwind CSS : Purge des classes inutilisées, réduction de la complexité du DOM.
+
+## 7. Conclusion et prochaines étapes
+Après l'application des solutions,
+nous allons refaire les mesures pour comparer l'amélioration
+des performances. Si les résultats ne sont pas encore satisfaisants,
+d’autres stratégies seront envisagées, comme la mise en place d’un
+CDN pour les assets statiques ou encore une refonte de certaines requêtes backend.
+
+### Futur
+- Mise en place d'un système de monitoring en continu.
+- Réduction du nombre de dépendances inutiles.
+- Optimisation du serveur PostgreSQL (tuning des paramètres, partitionnement des tables si nécessaire).
+- Mise en place d'un pipeline CI/CD intégrant des tests de performance.
+
+Avec ces optimisations, nous espérons rendre l’application plus fluide et réactive, tout en garantissant une bonne scalabilité pour les futurs utilisateurs.
